@@ -1,5 +1,6 @@
 package br.com.coopbuggy.mcoopbuggy;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,11 +22,14 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.coopbuggy.mcoopbuggy.adapters.BDControle;
 import br.com.coopbuggy.mcoopbuggy.adapters.ListaBugueirosAdapter;
 import br.com.coopbuggy.mcoopbuggy.javaclass.Bugueiro;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private BDControle banco;
 
     private Button btnViagem;
     private ListView escala;
@@ -41,6 +45,8 @@ public class MainActivity extends AppCompatActivity
 
         //Criando perfil do bugueiro logado
         perfilBugueiro = new Bugueiro("Colossus", "aaa - 1234", R.drawable.miniperfil);
+        banco = new BDControle(this);
+        banco.inserir(perfilBugueiro);
 
         escala = (ListView) findViewById(R.id.listaBugueiros);
         List<Bugueiro> bugueiros = gerarBugueiros();
@@ -158,13 +164,13 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_camera) {
             Intent intentPerfil = new Intent(MainActivity.this, PerfilActivity.class);
-            intentPerfil.putExtra("perfilBugueiro", perfilBugueiro);
+//            intentPerfil.putExtra("perfilBugueiro", perfilBugueiro);
             startActivity(intentPerfil);
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_precos) {
-                Intent intentPrecos = new Intent(MainActivity.this, PrecoActivity.class);
-                startActivity(intentPrecos);
+            Intent intentPrecos = new Intent(MainActivity.this, PrecoActivity.class);
+            startActivity(intentPrecos);
 
         } else if (id == R.id.nav_manage) {
 
@@ -179,18 +185,4 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.i("testeOverride", "OnResume");
-        if(getIntent().getSerializableExtra("perfilBugueiro") != null){
-            perfilBugueiroRertono = (Bugueiro) getIntent().getSerializableExtra("perfilBugueiro");
-        }
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        Log.i("testeOverride", "OnRestart");
-    }
 }

@@ -12,6 +12,7 @@ import java.io.Serializable;
 
 public class Bugueiro implements Serializable{
 
+    private int id;
     private String nome;
     private String telefone;
     private String email;
@@ -30,6 +31,15 @@ public class Bugueiro implements Serializable{
     public Bugueiro(){
 
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getNome() {
         return nome;
     }

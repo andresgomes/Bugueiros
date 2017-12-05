@@ -41,7 +41,7 @@ public class ListaBugueirosAdapter extends ArrayAdapter<Bugueiro> {
         textViewNomeBugueiro.setText(bugueiro.getNome());
 
         TextView textViewPlacaBugueiro = (TextView) view.findViewById(R.id.text_view_placa_bugueiro);
-        textViewPlacaBugueiro.setText("Placa: " + bugueiro.getVeiculo().getPlaca());
+        textViewPlacaBugueiro.setText("Placa: " + bugueiro.getPlacaVeiculo());
 
         return view;
     }

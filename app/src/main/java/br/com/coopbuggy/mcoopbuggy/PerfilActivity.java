@@ -23,10 +23,12 @@ import android.widget.Toast;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import br.com.coopbuggy.mcoopbuggy.adapters.BDControle;
 import br.com.coopbuggy.mcoopbuggy.javaclass.Bugueiro;
 
 public class PerfilActivity extends AppCompatActivity {
 
+    private BDControle banco;
     private Button btnVoltaDePerfil,btnSalvar;
     private EditText nome, sobrenome;
     private ImageButton btnAlterarFoto;
@@ -37,7 +39,12 @@ public class PerfilActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil);
 
-        perfilBugueiro = (Bugueiro) getIntent().getSerializableExtra("perfilBugueiro");
+        //perfilBugueiro = (Bugueiro) getIntent().getSerializableExtra("perfilBugueiro");
+
+        banco = new BDControle(this);
+        perfilBugueiro = banco.buscar();
+
+        btnAlterarFoto = (ImageButton) findViewById(R.id.botaoAlterarFoto);
 
         //carregando imagem de perfil caso haja
         if (perfilBugueiro.getImagemSerializada() != null){
@@ -47,7 +54,7 @@ public class PerfilActivity extends AppCompatActivity {
             btnAlterarFoto.setImageBitmap(bitmap);
         }
 
-        btnAlterarFoto = (ImageButton) findViewById(R.id.botaoAlterarFoto);
+
         //Iniciar Alteração de foto
         btnAlterarFoto.setOnClickListener(new OnClickListener() {
             @Override
@@ -74,13 +81,14 @@ public class PerfilActivity extends AppCompatActivity {
             }
         });
 
-        //Salvando alteração de foto de perfil
+        //Salvando alteração de perfil
         btnSalvar = (Button) findViewById(R.id.btnSalvarAlteracaoPerfil);
         btnSalvar.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(PerfilActivity.this, MainActivity.class);
-                intent.putExtra("perfilAlterado", perfilBugueiro);
+                perfilBugueiro.setNome(nome.getText().toString());
+                banco.atualizar(perfilBugueiro);
                 startActivity(intent);
             }
         });

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/McoopBuggy.iml" filepath="$PROJECT_DIR$/McoopBuggy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Bugueiros.iml" filepath="$PROJECT_DIR$/Bugueiros.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

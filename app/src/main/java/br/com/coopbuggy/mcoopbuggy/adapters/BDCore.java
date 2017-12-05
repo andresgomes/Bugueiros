@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by Andre on 03/12/2017.
  */
 
-public class CriaBanco extends SQLiteOpenHelper {
+public class BDCore extends SQLiteOpenHelper {
 
     private static final String NOME_BANCO = "banco.db";
     private static final String TABELA = "bugueiro";
@@ -17,19 +17,23 @@ public class CriaBanco extends SQLiteOpenHelper {
     private static final String TELEFONE = "telefone";
     private static final String EMAIL = "email";
     private static final String PLACAVEICULO = "placa";
+    private static final String FOTOPERFIL = "foto";
     private static final int VERSAO = 1;
 
-    public CriaBanco(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
+    public BDCore(Context context) {
+        super(context, NOME_BANCO, null, VERSAO);
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
+        sqLiteDatabase.execSQL("CREATE TABLE bugueiro(_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                " nome TEXT, email TEXT, placa TEXT, foto TEXT)");
 
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-
+        sqLiteDatabase.execSQL("DROP TABLE bugueiro");
+        onCreate(sqLiteDatabase);
     }
 }
