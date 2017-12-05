@@ -5,10 +5,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.MediaStore.Images.Media;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +27,8 @@ import br.com.coopbuggy.mcoopbuggy.javaclass.Bugueiro;
 
 public class PerfilActivity extends AppCompatActivity {
 
+    final static int REQUEST_IMAGE_CAPTURE = 1;
+    final static int REQUEST_GALERY = 2;
     private BDControle banco;
     private Button btnVoltaDePerfil,btnSalvar;
     private EditText nome, sobrenome;
@@ -66,14 +67,17 @@ public class PerfilActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Toast.makeText(PerfilActivity.this,"Carregando camera",Toast.LENGTH_SHORT).show();
+                        Intent tirandoFoto = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            startActivityForResult(tirandoFoto, REQUEST_IMAGE_CAPTURE);
                     }
                 });
+
                 builder.setNegativeButton("Galeria", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Toast.makeText(PerfilActivity.this,"Carregando galeria",Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(Intent.ACTION_PICK, Media.EXTERNAL_CONTENT_URI);
-                        startActivityForResult(intent, 1);
+                        startActivityForResult(intent, REQUEST_GALERY);
                     }
                 });
                 AlertDialog alertDialog = builder.create();
@@ -90,6 +94,7 @@ public class PerfilActivity extends AppCompatActivity {
                 perfilBugueiro.setNome(nome.getText().toString());
                 banco.atualizar(perfilBugueiro);
                 startActivity(intent);
+                Toast.makeText(PerfilActivity.this, "Alterações salvas com sucesso", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -110,12 +115,12 @@ public class PerfilActivity extends AppCompatActivity {
         });
     }
 
-    //Tratar retorno da imagem
+    //Tratar retorno da imagem da galeria
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         //Testar retorno
-        if (requestCode == 1 && resultCode == RESULT_OK && data != null){
+        if (requestCode == REQUEST_GALERY && resultCode == RESULT_OK && data != null){
             //Recuperar local da imagem
             Uri localImagemSelecionada = data.getData();
 
@@ -136,6 +141,26 @@ public class PerfilActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && data != null){
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            Bundle extras = data.getExtras();
+            options.inSampleSize = 3;
+            //Bitmap imageBitmap = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory() + "/arquivo.jpg", options);
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            boolean validaCompressao = imageBitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream);
+            byte[] fotoBinario = outputStream.toByteArray();
+
+            String encodedImage = Base64.encodeToString(fotoBinario, Base64.DEFAULT);
+
+            btnAlterarFoto.setImageBitmap(imageBitmap); // ImageButton, seto a foto como imagem do botão
+
+            perfilBugueiro.setImagemSerializada(encodedImage);
+
+            boolean isImageTaken = true;
         }
     }
 
