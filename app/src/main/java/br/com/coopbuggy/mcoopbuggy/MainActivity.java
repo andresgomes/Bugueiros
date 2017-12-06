@@ -1,8 +1,9 @@
 package br.com.coopbuggy.mcoopbuggy;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -21,20 +22,24 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import br.com.coopbuggy.mcoopbuggy.adapters.BDControle;
 import br.com.coopbuggy.mcoopbuggy.adapters.ListaBugueirosAdapter;
 import br.com.coopbuggy.mcoopbuggy.javaclass.Bugueiro;
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private BDControle banco;
 
-    private Button btnViagem;
+    private Button btnViagem, btnCancelarViagem;
     private ListView escala;
     private Bugueiro perfilBugueiro;
-    private Bugueiro perfilBugueiroRertono = new Bugueiro();
+    private boolean emViagem = false;
+    TimerTask timerTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,18 +69,39 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //Terminar viagem
+        //Iniciar e terminar viagem
         btnViagem = (Button) findViewById(R.id.btnInicarCorrida);
+        btnCancelarViagem = (Button) findViewById(R.id.btnCancelarCorrida);
+        btnCancelarViagem.setVisibility(View.INVISIBLE);
         btnViagem.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 //btnViagem.setText("Concluir viagem");
-                if (btnViagem.getText().equals("Iniciar Viagem"))
+                if (btnViagem.getText().equals("Iniciar Viagem")) {
                     btnViagem.setText("Concluir Viagem");
-                else
+                    btnCancelarViagem.setVisibility(View.VISIBLE);
+                    Timer timer = new Timer();
+                    timerTask = new TimerTask() {
+                        int contador = 0;
+                        @Override
+                        public void run() {
+                            Log.i("TesteTimer", "Mensagem: " + contador);
+                            contador ++;
+                        }
+                    };
+                    timer.schedule(timerTask, 0, 5000);
+                    emViagem = true;
+                }
+                else {
                     btnViagem.setText("Iniciar Viagem");
+                    btnCancelarViagem.setVisibility(View.INVISIBLE);
+                    timerTask.cancel();
+                    Log.i("TesteTimer", "Contador parado");
+                    emViagem = false;
+                }
             }
         });
+
         /*
         Fim do OnCreate
          */
@@ -185,4 +211,12 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+}
+
+class emViagem extends AsyncTask<String, Void, Uri>{
+
+    @Override
+    protected Uri doInBackground(String... strings) {
+        return null;
+    }
 }

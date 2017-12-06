@@ -32,7 +32,22 @@
 
 
     <Button
-        android:width="120dp"
+        android:id="@+id/btnCancelarCorrida"
+        android:layout_width="80dp"
+        android:layout_height="48dp"
+        android:layout_gravity="top|center_horizontal"
+        android:width="0dp"
+        android:background="@color/colorPrimaryDark"
+        android:text="@string/cancelarViagem"
+        android:textColor="#ffffff"
+        android:visibility="visible"
+        app:layout_anchor="@+id/include"
+        app:layout_anchorGravity="bottom|center"
+        tools:layout_editor_absoluteX="98dp"
+        tools:layout_editor_absoluteY="525dp"/>
+
+    <Button
+        android:width="80dp"
         android:id="@+id/btnInicarCorrida"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

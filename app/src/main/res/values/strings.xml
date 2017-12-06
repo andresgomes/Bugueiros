@@ -22,4 +22,5 @@
     <string name="title_activity_main2">Main2Activity</string>
     <string name="btnVoltar">Voltar</string>
     <string name="iniciarViagem">Iniciar Viagem</string>
+    <string name="cancelarViagem">Cancelar Viagem</string>
 </resources>
