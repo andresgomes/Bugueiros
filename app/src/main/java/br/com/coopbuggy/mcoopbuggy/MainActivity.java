@@ -1,10 +1,11 @@
 package br.com.coopbuggy.mcoopbuggy;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +41,7 @@ public class MainActivity extends AppCompatActivity
     private ListView escala;
     private Bugueiro perfilBugueiro;
     private boolean emViagem = false;
-    TimerTask timerTask;
+    private TimerTask timerTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +75,15 @@ public class MainActivity extends AppCompatActivity
         btnViagem = (Button) findViewById(R.id.btnInicarCorrida);
         btnCancelarViagem = (Button) findViewById(R.id.btnCancelarCorrida);
         btnCancelarViagem.setVisibility(View.INVISIBLE);
+        btnCancelarViagem.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                timerTask.cancel();
+                btnCancelarViagem.setVisibility(View.INVISIBLE);
+                btnViagem.setText("Iniciar Viagem");
+                Toast.makeText(MainActivity.this,"Viagem Cancelada",Toast.LENGTH_LONG).show();
+            }
+        });
         btnViagem.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,7 +97,12 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void run() {
                             Log.i("TesteTimer", "Mensagem: " + contador);
+                            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                            long milessegundos = 300;
+                            vibrator.vibrate(milessegundos);
+                            //Toast.makeText(MainActivity.this,"Em viagem. Contador em: " + contador,Toast.LENGTH_LONG).show();
                             contador ++;
+
                         }
                     };
                     timer.schedule(timerTask, 0, 5000);
@@ -96,7 +112,8 @@ public class MainActivity extends AppCompatActivity
                     btnViagem.setText("Iniciar Viagem");
                     btnCancelarViagem.setVisibility(View.INVISIBLE);
                     timerTask.cancel();
-                    Log.i("TesteTimer", "Contador parado");
+                    //Log.i("TesteTimer", "Conta");
+                    Toast.makeText(MainActivity.this,"Viagem Concluida",Toast.LENGTH_LONG).show();
                     emViagem = false;
                 }
             }
@@ -213,10 +230,10 @@ public class MainActivity extends AppCompatActivity
 
 }
 
-class emViagem extends AsyncTask<String, Void, Uri>{
+class ExibirToast extends AsyncTask<String, Void, Integer> {
 
     @Override
-    protected Uri doInBackground(String... strings) {
+    protected Integer doInBackground(String... strings) {
         return null;
     }
 }
