@@ -3,42 +3,44 @@ package br.com.coopbuggy.mcoopbuggy;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.Request.Method;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import br.com.coopbuggy.mcoopbuggy.adapters.VolleyAdapter;
+
 /**
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends AppCompatActivity {
 
-    /**
-     * Id to identity READ_CONTACTS permission request.
-     */
-    private static final int REQUEST_READ_CONTACTS = 0;
-
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-
+    private static final String ENDPOINT = "https://bugueiros.herokuapp.com/api/login/";
     // UI references.
     private EditText mPasswordView, mUserName;
     private View mProgressView;
     private View mLoginFormView;
+    private RequestQueue requestQueue;
+    private Map<String, String> params;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        requestQueue = Volley.newRequestQueue(this);
 
         // Set up the login form.
         mUserName = (EditText) findViewById(R.id.txtUserName);
@@ -50,14 +52,18 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String UserName = mUserName.getText().toString();
                 String Pass = mPasswordView.getText().toString();
-                if(UserName.equalsIgnoreCase("andre") && Pass.equals("123")){
-                    Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(mainIntent);
-                    Toast.makeText(LoginActivity.this, "Bem vindo " + mUserName.getText(), Toast.LENGTH_SHORT).show();
-                    LoginActivity.this.finish();
-                }else {
-                    Toast.makeText(LoginActivity.this, "Desculpe. Verifique os dados de acesso.", Toast.LENGTH_SHORT).show();
-                }
+                params = new HashMap<String, String>();
+                params.put("username", UserName);
+                params.put("password", Pass);
+                loginVolley(params);
+//                if(UserName.equalsIgnoreCase("andre") && Pass.equals("123")){
+//                    Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
+//                    startActivity(mainIntent);
+//                    Toast.makeText(LoginActivity.this, "Bem vindo " + mUserName.getText(), Toast.LENGTH_SHORT).show();
+//                    LoginActivity.this.finish();
+//                }else {
+//                    Toast.makeText(LoginActivity.this, "Desculpe. Verifique os dados de acesso.", Toast.LENGTH_SHORT).show();
+//                }
             }
         });
 
@@ -74,6 +80,28 @@ public class LoginActivity extends AppCompatActivity {
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
     }
+
+    private void loginVolley(Map<String, String> params){
+        VolleyAdapter request = new VolleyAdapter(Method.POST,ENDPOINT, params, onPostLoaded, onPostError);;
+        Log.i("ResponseTeste",String.valueOf(request));
+        requestQueue.add(request);
+    }
+
+    private final Response.Listener<String> onPostLoaded = new Response.Listener<String>(){
+        @Override
+        public void onResponse(String response) {
+            Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(mainIntent);
+            Toast.makeText(LoginActivity.this, "Bem vindo " + mUserName.getText(), Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    private final Response.ErrorListener onPostError = new ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            Toast.makeText(LoginActivity.this, "Desculpe. Verifique os dados de acesso.", Toast.LENGTH_SHORT).show();
+        }
+    };
 
 }
 

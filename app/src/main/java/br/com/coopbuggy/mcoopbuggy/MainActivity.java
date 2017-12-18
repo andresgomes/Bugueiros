@@ -3,6 +3,7 @@ package br.com.coopbuggy.mcoopbuggy;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -22,6 +23,10 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -33,7 +38,7 @@ import br.com.coopbuggy.mcoopbuggy.javaclass.Bugueiro;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private BDControle banco;
 
@@ -42,6 +47,7 @@ public class MainActivity extends AppCompatActivity
     private Bugueiro perfilBugueiro;
     private boolean emViagem = false;
     private TimerTask timerTask;
+    private GoogleApiClient googleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +106,8 @@ public class MainActivity extends AppCompatActivity
                             Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                             long milessegundos = 300;
                             vibrator.vibrate(milessegundos);
+                            callConnection();
+
                             //Toast.makeText(MainActivity.this,"Em viagem. Contador em: " + contador,Toast.LENGTH_LONG).show();
                             contador ++;
 
@@ -228,12 +236,45 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    private synchronized void callConnection(){
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .addOnConnectionFailedListener(this)
+                .addConnectionCallbacks(this)
+                .addApi(LocationServices.API)
+                .build();
+
+        googleApiClient.connect();
+
 }
 
-class ExibirToast extends AsyncTask<String, Void, Integer> {
+    @Override
+    public void onConnected(Bundle bundle) {
+        Log.i("GPS", "onConnected");
+
+        Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+
+        if (location != null){
+            Log.i("GPS", "Latitude: " + location.getLatitude());
+            Log.i("GPS", "Longitude: " + location.getLongitude());
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.i("GPS", "onConnetionSuspended(" + i + ")");
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
+}
+
+class GPSLocation extends AsyncTask<String, Void, Integer> {
 
     @Override
     protected Integer doInBackground(String... strings) {
         return null;
     }
+
 }
