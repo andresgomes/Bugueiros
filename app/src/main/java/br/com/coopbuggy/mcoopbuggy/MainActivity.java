@@ -57,9 +57,9 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         //Criando perfil do bugueiro logado
-        perfilBugueiro = new Bugueiro("Colossus", "aaa - 1234", R.drawable.miniperfil);
+//        perfilBugueiro = new Bugueiro("Colossus", "aaa - 1234", R.drawable.miniperfil);
         banco = new BDControle(this);
-        banco.inserir(perfilBugueiro);
+//        banco.inserir(perfilBugueiro);
 
         escala = (ListView) findViewById(R.id.listaBugueiros);
         List<Bugueiro> bugueiros = gerarBugueiros();

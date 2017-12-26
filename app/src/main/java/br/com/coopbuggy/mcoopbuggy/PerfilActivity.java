@@ -40,8 +40,6 @@ public class PerfilActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil);
 
-        //perfilBugueiro = (Bugueiro) getIntent().getSerializableExtra("perfilBugueiro");
-
         banco = new BDControle(this);
         perfilBugueiro = banco.buscar();
 
@@ -91,7 +89,8 @@ public class PerfilActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(PerfilActivity.this, MainActivity.class);
-                perfilBugueiro.setNome(nome.getText().toString());
+                perfilBugueiro.setFirstName(nome.getText().toString());
+                perfilBugueiro.setLast_name(sobrenome.getText().toString());
                 banco.atualizar(perfilBugueiro);
                 startActivity(intent);
                 Toast.makeText(PerfilActivity.this, "Alterações salvas com sucesso", Toast.LENGTH_LONG).show();
@@ -101,7 +100,8 @@ public class PerfilActivity extends AppCompatActivity {
         //Recuperando do laytout e exibindo
         nome = (EditText) findViewById(R.id.edtNome);
         sobrenome = (EditText) findViewById(R.id.edtSobrenome);
-        nome.setText(perfilBugueiro.getNome());
+        nome.setText(perfilBugueiro.getFirstName());
+        sobrenome.setText(perfilBugueiro.getLast_name());
 
 
         //Ação do botao voltar do app

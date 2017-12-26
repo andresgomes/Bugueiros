@@ -1,9 +1,9 @@
 package br.com.coopbuggy.mcoopbuggy;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -16,11 +16,15 @@ import com.android.volley.Response;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import br.com.coopbuggy.mcoopbuggy.adapters.BDControle;
 import br.com.coopbuggy.mcoopbuggy.adapters.VolleyAdapter;
+import br.com.coopbuggy.mcoopbuggy.javaclass.Bugueiro;
 
 /**
  * A login screen that offers login via email/password.
@@ -28,17 +32,27 @@ import br.com.coopbuggy.mcoopbuggy.adapters.VolleyAdapter;
 public class LoginActivity extends AppCompatActivity {
 
     private static final String ENDPOINT = "https://bugueiros.herokuapp.com/api/login/";
+
+    private BDControle banco;
+    private Bugueiro perfilBugueiro = new Bugueiro();
+    private Gson gson;
+
     // UI references.
     private EditText mPasswordView, mUserName;
     private View mProgressView;
     private View mLoginFormView;
     private RequestQueue requestQueue;
     private Map<String, String> params;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        context = this;
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gson = gsonBuilder.create();
 
         requestQueue = Volley.newRequestQueue(this);
 
@@ -83,13 +97,17 @@ public class LoginActivity extends AppCompatActivity {
 
     private void loginVolley(Map<String, String> params){
         VolleyAdapter request = new VolleyAdapter(Method.POST,ENDPOINT, params, onPostLoaded, onPostError);;
-        Log.i("ResponseTeste",String.valueOf(request));
+
         requestQueue.add(request);
     }
 
     private final Response.Listener<String> onPostLoaded = new Response.Listener<String>(){
         @Override
         public void onResponse(String response) {
+//            perfilBugueiro = new Bugueiro("Colossus", "aaa - 1234", R.drawable.miniperfil);
+            perfilBugueiro = gson.fromJson(response, Bugueiro.class);
+            banco = new BDControle(context);
+            banco.inserir(perfilBugueiro);
             Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(mainIntent);
             Toast.makeText(LoginActivity.this, "Bem vindo " + mUserName.getText(), Toast.LENGTH_SHORT).show();

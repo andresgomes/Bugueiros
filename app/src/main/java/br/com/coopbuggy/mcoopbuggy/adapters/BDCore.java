@@ -18,7 +18,7 @@ public class BDCore extends SQLiteOpenHelper {
     private static final String EMAIL = "email";
     private static final String PLACAVEICULO = "placa";
     private static final String FOTOPERFIL = "foto";
-    private static final int VERSAO = 1;
+    private static final int VERSAO = 3;
 
     public BDCore(Context context) {
         super(context, NOME_BANCO, null, VERSAO);
@@ -27,7 +27,7 @@ public class BDCore extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL("CREATE TABLE bugueiro(_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                " nome TEXT, email TEXT, placa TEXT, foto TEXT)");
+                " first_name TEXT, last_name TEXT, email TEXT, placa TEXT, foto TEXT,int PERMISSION, token TOKEN)");
 
     }
 

@@ -5,9 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import br.com.coopbuggy.mcoopbuggy.javaclass.Bugueiro;
 
 /**
@@ -24,7 +21,7 @@ public class BDControle {
 
     public void inserir(Bugueiro bugueiro){
         ContentValues values = new ContentValues();
-        values.put("nome", bugueiro.getNome());
+        values.put("first_name", bugueiro.getFirstName());
         values.put("placa", bugueiro.getPlacaVeiculo());
 
         database.insert("bugueiro", null, values);
@@ -32,7 +29,8 @@ public class BDControle {
 
     public void atualizar(Bugueiro bugueiro){
         ContentValues values = new ContentValues();
-        values.put("nome", bugueiro.getNome());
+        values.put("first_name", bugueiro.getFirstName());
+        values.put("last_name", bugueiro.getLast_name());
         values.put("foto", bugueiro.getImagemSerializada());
 
         database.update("bugueiro", values, "_id = ?", new String[]{""+bugueiro.getId()});
@@ -44,7 +42,7 @@ public class BDControle {
 
     public Bugueiro buscar(){
         Bugueiro bugueiro = new Bugueiro();
-        String[] colunas = new String[]{"_id", "nome", "foto"};
+        String[] colunas = new String[]{"_id", "first_name", "last_name", "foto"};
 
         Cursor cursor = database.query("bugueiro", colunas, null, null, null, null,null);
 
@@ -52,8 +50,9 @@ public class BDControle {
             cursor.moveToFirst();
 
             bugueiro.setId((int) cursor.getLong(0));
-            bugueiro.setNome(cursor.getString(1));
-            bugueiro.setImagemSerializada(cursor.getString(2));
+            bugueiro.setFirstName(cursor.getString(1));
+            bugueiro.setLast_name(cursor.getString(2));
+            bugueiro.setImagemSerializada(cursor.getString(3));
 
         }
 

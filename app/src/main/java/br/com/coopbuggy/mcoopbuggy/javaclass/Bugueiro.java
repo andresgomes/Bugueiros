@@ -1,8 +1,6 @@
 package br.com.coopbuggy.mcoopbuggy.javaclass;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 
 import java.io.Serializable;
 
@@ -13,17 +11,21 @@ import java.io.Serializable;
 public class Bugueiro implements Serializable{
 
     private int id;
-    private String nome;
-    private String telefone;
+    private String first_name;
+    private String last_name;
+    private String username;
     private String email;
+    private String telefone;
     private int foto;
+    private int permission;
     private String placaVeiculo;
+    private String token;
     private int anoVeiculo;
     private Bitmap imagem;
     private String imagemSerializada = null;
 
-    public Bugueiro (String nome, String placa, int imagem){
-        this.nome = nome;
+    public Bugueiro (String first_name, String placa, int imagem){
+        this.first_name = first_name;
         this.foto = imagem;
         this.placaVeiculo = placa;
     }
@@ -40,12 +42,12 @@ public class Bugueiro implements Serializable{
         this.id = id;
     }
 
-    public String getNome() {
-        return nome;
+    public String getFirstName() {
+        return first_name;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setFirstName(String nome) {
+        this.first_name = nome;
     }
 
     public String getTelefone() {
@@ -104,8 +106,40 @@ public class Bugueiro implements Serializable{
         this.imagemSerializada = imagemSerializada;
     }
 
+    public String getLast_name() {
+        return last_name;
+    }
+
+    public void setLast_name(String last_name) {
+        this.last_name = last_name;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public int getPermission() {
+        return permission;
+    }
+
+    public void setPermission(int permission) {
+        this.permission = permission;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     @Override
     public String toString() {
-        return nome;
+        return first_name;
     }
 }
